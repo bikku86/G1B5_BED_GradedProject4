@@ -73,12 +73,12 @@ public class SecurityConfig {
 					.disable()
 					)
 			.authorizeHttpRequests((authorize) -> authorize
-					.requestMatchers("/","/employees/**").permitAll()
+					.requestMatchers("/","/home","/employees/**").permitAll()
 					.requestMatchers("/roles/**","/users/**").hasAnyRole("ADMIN")
 					.requestMatchers("/employees/**").hasAnyAuthority("ADMIN","USER")
 					.requestMatchers(HttpMethod.POST,"employees").hasAuthority("ADMIN")
-			        .requestMatchers(HttpMethod.PUT,"employees").hasAuthority("ADMIN")
-			        .requestMatchers(HttpMethod.DELETE,"employees/*").hasAuthority("ADMIN")
+			        	.requestMatchers(HttpMethod.PUT,"employees").hasAuthority("ADMIN")
+			        	.requestMatchers(HttpMethod.DELETE,"employees/*").hasAuthority("ADMIN")
 					.anyRequest().authenticated()
 					);
 			
