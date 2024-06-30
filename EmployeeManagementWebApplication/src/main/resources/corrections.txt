@@ -1,0 +1,10 @@
+CORRECTIONS DONE:
+
+1) Commented the Constructor & UserDetailService & PasswordEncoder objects creation 
+2) Added Beans
+	userDetailsService()
+	passwordEncoder()
+	authenticationProvider()
+3) ReWrote securityFilterChain method
+4) Commented "CustomAuthenticationProvider" class
+5) AuthenticationConfig class retained in Commented state(Already it was commented)

@@ -3,37 +3,58 @@ package com.empweb.configuration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+
+import com.empweb.serviceImplementation.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 	
-	private final UserDetailsService userDetailsService;
-    private final PasswordEncoder passwordEncoder;
-
-    public SecurityConfig(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
-        this.userDetailsService = userDetailsService;
-        this.passwordEncoder = passwordEncoder;
-    }
-
-//	@Bean
-//	public UserDetailsService userDetailsService() {
-//		return new CustomUserDetailsService();
-//	}
+//	private final UserDetailsService userDetailsService;
+//    private final PasswordEncoder passwordEncoder;
 //
-//	@Bean
-//	public BCryptPasswordEncoder passwordEncoder() {
-//	return new BCryptPasswordEncoder();
-//	}
+//    public SecurityConfig(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+//        this.userDetailsService = userDetailsService;
+//        this.passwordEncoder = passwordEncoder;
+//    }
+
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        UserDetails user = User.withUsername("user")
+//                               .password(passwordEncoder().encode("password"))
+//                               .roles("USER")
+//                               .build();
+//        return new InMemoryUserDetailsManager(user);
+//    }
+//    
+	@Bean
+	public UserDetailsService userDetailsService() {
+		return new CustomUserDetailsService();
+	}
+
 	
+	public PasswordEncoder passwordEncoder() {
+	return new BCryptPasswordEncoder();
+	}
+	
+	
+	@Bean
+	 public DaoAuthenticationProvider authenticationProvider() {
+	        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+	        authenticationProvider.setUserDetailsService(userDetailsService());
+	        authenticationProvider.setPasswordEncoder(passwordEncoder());
+	        return authenticationProvider;
+	 }
 	
 	
 //
@@ -52,26 +73,36 @@ public class SecurityConfig {
 					.disable()
 					)
 			.authorizeHttpRequests((authorize) -> authorize
-					.requestMatchers("/","/h2-console/").permitAll()
-					.requestMatchers("/roles/**","/users/**","/employees/**").hasRole("ADMIN")
-					.requestMatchers("/users/**").hasRole("USER")
-		            .requestMatchers(HttpMethod.POST,"employees").hasAuthority("ADMIN")
-		            .requestMatchers(HttpMethod.PUT,"employees").hasAuthority("ADMIN")
-		            .requestMatchers(HttpMethod.DELETE,"employees/*").hasAuthority("ADMIN")
+					.requestMatchers("/","/employees/**").permitAll()
+					.requestMatchers("/roles/**","/users/**").hasAnyRole("ADMIN")
+					.requestMatchers("/employees/**").hasAnyAuthority("ADMIN","USER")
+					.requestMatchers(HttpMethod.POST,"employees").hasAuthority("ADMIN")
+			        .requestMatchers(HttpMethod.PUT,"employees").hasAuthority("ADMIN")
+			        .requestMatchers(HttpMethod.DELETE,"employees/*").hasAuthority("ADMIN")
 					.anyRequest().authenticated()
-					)
+					);
 			
-			//.httpBasic(withDefaults())
+//			.httpBasic(httpBasic -> {})
 			 //.authenticationManager(new CustomAuthenticationManager())
+			
+			
+//			.formLogin(formLogin -> formLogin
+//					.permitAll()
+////					.defaultSuccessUrl("/home",true)
+//					);
 
-				.formLogin((form) -> form
-						.loginPage("/login")
-						//.defaultSuccessUrl("/home",true)
-						.permitAll())
-				.logout((logout) -> logout
-						.logoutUrl("/logout")
-						.logoutSuccessUrl("/login?logout")
-						.permitAll());
+//				.formLogin((form) -> form
+//						.loginPage("/login")
+//						//.defaultSuccessUrl("/home",true)
+//						.permitAll())
+//				.logout((logout) -> logout
+//						.logoutUrl("/logout")
+//						.logoutSuccessUrl("/login?logout")
+//						.permitAll());
+//		
+		
+		
+		
 //.exceptionHandling((exceptions) -> exceptions
 //						.accessDeniedPage("/403"));
 		
@@ -79,16 +110,16 @@ public class SecurityConfig {
 		return http.build();
 	}
 	
-	@Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
-
-    @Bean
-    public AuthenticationManagerBuilder authenticationManagerBuilder(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
-        return auth;
-    }
+//	@Bean
+//    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+//        return authenticationConfiguration.getAuthenticationManager();
+//    }
+//
+//    @Bean
+//    public AuthenticationManagerBuilder authenticationManagerBuilder(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+//        return auth;
+//    }
 
 
 }

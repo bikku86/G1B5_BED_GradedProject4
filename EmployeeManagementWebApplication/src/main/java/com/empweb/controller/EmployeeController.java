@@ -30,10 +30,10 @@ public class EmployeeController {
     
     @GetMapping
     public List<Employee> getAllEmployees() {
-    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		Collection<? extends GrantedAuthority> currentPrincipalName = authentication.getAuthorities();
-		System.out.println(currentPrincipalName);
-		return employeeService.getAllEmployees();
+//    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//		Collection<? extends GrantedAuthority> currentPrincipalName = authentication.getAuthorities();
+//		System.out.println(currentPrincipalName);
+	return employeeService.getAllEmployees();
     }
     
     @PostMapping

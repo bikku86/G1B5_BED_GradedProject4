@@ -15,20 +15,20 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
     
-    @Autowired
-	BCryptPasswordEncoder bcryptEncoder;
+//    @Autowired
+//	BCryptPasswordEncoder bcryptEncoder;
 
 //    @Autowired
 //    private PasswordEncoder passwordEncoder;
 //    
-//  @Bean
-//  public PasswordEncoder passwordEncoder() {
-//      return new BCryptPasswordEncoder();
-//  }
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+      return new BCryptPasswordEncoder();
+  }
 
 
     public User createUser(User user) {
-    	user.setPassword(bcryptEncoder.encode(user.getPassword()));
+    	user.setPassword(passwordEncoder().encode(user.getPassword()));
     	return userRepository.save(user);
     }
 }

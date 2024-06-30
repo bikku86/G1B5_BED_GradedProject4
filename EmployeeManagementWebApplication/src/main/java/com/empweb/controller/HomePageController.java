@@ -10,5 +10,10 @@ public class HomePageController {
 	public String home() {
 		return "<H1>Welcome to the root URL!</H1>";
 	}
+	
+	@GetMapping("/home")
+	public String homePage() {
+		return "<H1>This is the Home Page</H1>";
+	}
 
 }

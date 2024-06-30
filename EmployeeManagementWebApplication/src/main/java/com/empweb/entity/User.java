@@ -1,6 +1,7 @@
 package com.empweb.entity;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -28,6 +29,6 @@ public class User {
 				joinColumns = @JoinColumn(name = "user_id"),
 				inverseJoinColumns = @JoinColumn(name = "role_id")
 				)
-	private Set<Role> roles;
+	 private List<Role> roles = new ArrayList<>();
 
 }
